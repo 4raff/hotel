@@ -31,17 +31,17 @@
                 <form class="d-flex"
                     th:onsubmit="|window.location.href='/barang/' + this.keyword.value; return false;|">
                     <input class="form-control me-2" type="text" name="keyword" placeholder="Cari Barang..."
-                        th:value="${searchKeyword}" required/>
+                        th:value="${searchKeyword}" required />
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
         </div>
     </nav>
     <!-- end Navigation Bar -->
+
     <!-- Toast Container -->
     <div aria-live="polite" aria-atomic="true" class="position-relative">
-        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;">
             <!-- Success Toast -->
             <div th:if="${successMessage}" class="toast align-items-center text-bg-success border-0" role="alert"
                 aria-live="assertive" aria-atomic="true" id="successToast">
@@ -51,7 +51,6 @@
                         aria-label="Close"></button>
                 </div>
             </div>
-
             <!-- Error Toast -->
             <div th:if="${errorMessage}" class="toast align-items-center text-bg-danger border-0" role="alert"
                 aria-live="assertive" aria-atomic="true" id="errorToast">
@@ -61,9 +60,9 @@
                         aria-label="Close"></button>
                 </div>
             </div>
-
         </div>
     </div>
+    <!-- end of Toast Container -->
 
     <!-- Body of index.html barang -->
     <div class="row mt-5 mb-3 justify-content-center">
