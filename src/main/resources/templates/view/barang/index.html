@@ -1,0 +1,142 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Admin Panel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/barang">Barang</a>
+                    </li>
+                </ul>
+                <form class="d-flex"
+                    th:onsubmit="|window.location.href='/barang/' + this.keyword.value; return false;|">
+                    <input class="form-control me-2" type="text" name="keyword" placeholder="Cari Barang..."
+                        th:value="${searchKeyword}" required/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <!-- end Navigation Bar -->
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+
+            <!-- Success Toast -->
+            <div th:if="${successMessage}" class="toast align-items-center text-bg-success border-0" role="alert"
+                aria-live="assertive" aria-atomic="true" id="successToast">
+                <div class="d-flex">
+                    <div class="toast-body" th:text="${successMessage}"></div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+
+            <!-- Error Toast -->
+            <div th:if="${errorMessage}" class="toast align-items-center text-bg-danger border-0" role="alert"
+                aria-live="assertive" aria-atomic="true" id="errorToast">
+                <div class="d-flex">
+                    <div class="toast-body" th:text="${errorMessage}"></div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Body of index.html barang -->
+    <div class="row mt-5 mb-3 justify-content-center">
+        <div class="col-md-8 mx-auto">
+            <div class="d-flex align-items-center mb-3">
+                <p class="mb-0 fw-bold">Daftar barang</p>
+                <button class="btn btn-primary btn-sm ms-3" onclick="window.location.href='/barang/tambah'">Tambah
+                    Barang</button>
+            </div>
+            <!-- table for barang -->
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Nomor</th>
+                        <th scope="col">Nama Barang</th>
+                        <th scope="col">Jumlah Barang</th>
+                        <th scope="col">Ditambahkan Pada</th>
+                        <th scope="col">Diupdate Pada</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product, iterStat : ${products}">
+                        <th scope="row" th:text="${iterStat.index + 1}">1</th>
+                        <td th:text="${product.namaBarang}">Nama Barang</td>
+                        <td th:text="${product.jumlah}">Jumlah Barang</td>
+                        <td>
+                            <span th:if="${product.createdAt != null}"
+                                th:text="${#temporals.format(product.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></span>
+                            <span th:if="${product.createdAt == null}">N/A</span>
+                        </td>
+                        <td>
+                            <span th:if="${product.updatedAt != null}"
+                                th:text="${#temporals.format(product.updatedAt, 'dd-MM-yyyy HH:mm:ss')}"></span>
+                            <span th:if="${product.updatedAt == null}">N/A</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"
+                                onclick="window.location.href='/barang/edit'">Edit</button>
+                            <button class="btn btn-sm btn-danger"
+                                th:onclick="'window.location.href=\'/barang/hapus/' + ${product.id} + '\';'">
+                                Hapus
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- end of the table -->
+        </div>
+    </div>
+    <!-- end of Body -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+        crossorigin="anonymous"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const successToastEl = document.getElementById('successToast');
+            const errorToastEl = document.getElementById('errorToast');
+
+            if (successToastEl) {
+                const toast = new bootstrap.Toast(successToastEl, { delay: 3000 });
+                toast.show();
+            }
+
+            if (errorToastEl) {
+                const toast = new bootstrap.Toast(errorToastEl, { delay: 3000 });
+                toast.show();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
